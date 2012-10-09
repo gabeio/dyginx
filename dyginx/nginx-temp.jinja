@@ -1,0 +1,36 @@
+{% if p.upstream -%}
+upstream {{ p['upstreamer'] }} {
+        server {{ p.loopback }}:{{ p.loopPort }} max_fails={{ p.maxFails }} fail_timeout={{ p.timeout }}s;
+}
+{%- endif %}{% if p.worker -%}
+server {
+        listen {{ p.port }};
+        server_name {{ p.domainName|escape }};
+        
+        error_log /var/log/nginx/{{ p.domainName|escape }}.error.log warn;
+        location / {
+                proxy_pass http://{{ p.upstreamer }}/;
+                proxy_redirect off;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_max_temp_file_size {{ p.proxyMaxTempFileSize }};
+                client_max_body_size {{ p.clientMaxBodySize }};
+                client_body_buffer_size {{ p.clientBodyBufferSize }};
+
+                proxy_connect_timeout {{ p.proxyConnectTimeout }};
+                proxy_send_timeout {{ p.proxySendTimeout }};
+                proxy_read_timeout {{ p.proxyReadTimeout }};
+
+                proxy_buffer_size {{ p.proxyBufferSize }};
+                proxy_buffers {{ p.proxyBufferAmount }} {{ p.proxyBuffer }};
+                proxy_busy_buffers_size {{ p.proxyBusyBuffersSize }};
+                proxy_temp_file_write_size {{ p.proxyTempFileWriteSize }};
+        }
+}
+{%- endif %}{% if p.redirect -%}
+server {
+        listen {{ p.port }};
+        server_name *.{{ p.domainName|escape }};
+        rewrite ^ http://{{ p.domainName|escape }}$request_uri redirect;
+}
+{%- endif %}

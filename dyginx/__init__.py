@@ -7,7 +7,7 @@ from subprocess import Popen, PIPE, STDOUT
 from support import hashtime
 
 db = sqlite3.connect('internals.db')
-env = Environment(loader=FileSystemLoader([".",".."]))
+env = Environment(loader=FileSystemLoader([".","..","./dyginx"]))
 
 def nconfw(env,fname,params):
 	fs = open(fname,'w+')

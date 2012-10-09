@@ -5,6 +5,6 @@ Dynamic Nginx Controller &amp; Worker Controller via Simple &amp; Safe Frontend
 
 Features
 ========
-- Autimated configuration of nginx.
-- Autimated configuration of workers.
-- Autimated loopback routing.
+- Automated configuration of nginx.
+- Automated configuration of workers.
+- Automated loopback routing.
